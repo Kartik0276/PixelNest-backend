@@ -91,7 +91,9 @@ exports.loginUser = async (req, res) => {
 
         let options = {
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-            httpOnly: true
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-site cookies in production
         }
         res.cookie("token", token, options).status(200).json({
             success: true,
@@ -113,7 +115,9 @@ exports.logoutUser = async (req, res) => {
     try {
         res.cookie("token", null, {
             expires: new Date(Date.now()),
-            httpOnly: true
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         }).status(200).json({
             success: true,
             message: "Logout successful"
