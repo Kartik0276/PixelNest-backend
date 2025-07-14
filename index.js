@@ -14,13 +14,20 @@ const cors = require('cors');
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5174',
-    process.env.CLIENT_URL || 'http://localhost:5174'
-];
+    process.env.CLIENT_URL
+].filter(Boolean); // Remove undefined values
 
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true                // allow cookies (e.g., JWT in cookie)
-}));
+// For production, allow any origin if CLIENT_URL is not set (temporary fix)
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' && !process.env.CLIENT_URL
+        ? true  // Allow all origins in production if CLIENT_URL not set
+        : allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+};
+
+app.use(cors(corsOptions));
 
 
 //middlewares 
