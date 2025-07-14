@@ -1,6 +1,6 @@
 const express = require('express');
 const { connectDB } = require('./config/database');
-const cookieParesr = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 
 
 //env file
@@ -32,7 +32,7 @@ app.use(cors(corsOptions));
 
 //middlewares 
 app.use(express.json());
-app.use(cookieParesr());
+app.use(cookieParser());
 
 
 
