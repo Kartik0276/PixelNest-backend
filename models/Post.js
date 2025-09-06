@@ -78,17 +78,49 @@ postSchema.post("save", async function (doc) {
       },
     });
 
+    // const info = await transporter.sendMail({
+    //   from: process.env.MAIL_USER,
+    //   to: populatedDoc.createdBy.email,
+    //   subject: "New file uploaded to Cloudinary",
+    //   html: `
+    //     <h1>Hello ${populatedDoc.createdBy.name},</h1>
+    //     <p>Your file has been successfully uploaded.</p>
+    //     <p>Click <a href="${populatedDoc.imageUrl}">here</a> to view your file.</p>
+    //     <p>Thank you!</p>
+    //   `,
+    // });
+
     const info = await transporter.sendMail({
-      from: process.env.MAIL_USER,
-      to: populatedDoc.createdBy.email,
-      subject: "New file uploaded to Cloudinary",
-      html: `
-        <h1>Hello ${populatedDoc.createdBy.name},</h1>
-        <p>Your file has been successfully uploaded.</p>
-        <p>Click <a href="${populatedDoc.imageUrl}">here</a> to view your file.</p>
-        <p>Thank you!</p>
-      `,
-    });
+  from: `"PixelNest 📸" <${process.env.MAIL_USER}>`, // branded sender name
+  to: populatedDoc.createdBy.email,
+  subject: "🎉 Your new post is live on PixelNest!",
+  html: `
+    <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
+      <h2 style="color:#FF9800;">Hello ${populatedDoc.createdBy.name},</h2>
+      <p>Great news! 🎊 Your post has been successfully uploaded to <strong>PixelNest</strong>.</p>
+      
+      <p>
+        <a href="${process.env.CLIENT_URL}/post/${doc._id}" 
+           style="display:inline-block; padding:10px 20px; margin:10px 0; 
+                  background: linear-gradient(90deg, #FFD54F, #FF9800); 
+                  color:#fff; text-decoration:none; 
+                  border-radius:5px; font-weight:bold;">
+          View Your Post
+        </a>
+      </p>
+
+      <p>You can always return to PixelNest to explore, share, and inspire others.</p>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #ddd;" />
+      <p style="font-size:14px; color:#777; text-align:center;">
+        Sent with ❤️ by <strong>PixelNest</strong><br>
+        Capture • Share • Inspire<br>
+        <a href="${process.env.CLIENT_URL}" 
+           style="color:#FF9800; text-decoration:none;">Visit PixelNest</a>
+      </p>
+    </div>
+  `,
+});
+
 
     console.log("✅ Email sent:", info.response);
   } catch (error) {
